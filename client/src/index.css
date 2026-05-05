@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================================================
+   Safe Start — Duolingo-inspired design system
+   Mobile-first. All sizes calibrated for ≤ 600px first, then scale up.
+   ======================================================================== */
+
+:root {
+  /* Brand */
+  --green: 88 204 2;            /* #58CC02 */
+  --green-hover: 75 178 0;      /* #4BB200 */
+  --green-shadow: 97 184 0;     /* #61B800 */
+  --footer-green: 78 198 4;     /* #4EC604 */
+  --dark-blue: 16 15 62;        /* #100F3E */
+  --blue: 28 176 246;           /* #1CB0F6 */
+  --blue-shadow: 24 153 213;
+  --red: 255 75 75;             /* #FF4B4B */
+  --red-shadow: 204 60 60;      /* #CC3C3C */
+  --orange: 255 150 0;          /* #FF9600 */
+  --golden: 255 200 0;          /* #FFC800 */
+
+  /* Neutrals */
+  --gray-text: 75 75 75;        /* #4B4B4B */
+  --gray-light: 119 119 119;    /* #777777 */
+  --nav-text: 175 175 175;      /* #AFAFAF */
+  --border-color: 229 229 229;  /* #E5E5E5 */
+  --surface: 255 255 255;
+  --background: 255 255 255;
+
+  /* shadcn compatibility (kept so any leftover ui/ component compiles) */
+  --foreground: 0 0% 30%;
+  --border: 0 0% 90%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 30%;
+  --card-border: 0 0% 90%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 30%;
+  --popover-border: 0 0% 90%;
+  --primary: 90 88% 40%;
+  --primary-foreground: 0 0% 100%;
+  --primary-border: 90 88% 36%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 30%;
+  --secondary-border: 0 0% 92%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 47%;
+  --muted-border: 0 0% 92%;
+  --accent: 0 0% 96%;
+  --accent-foreground: 0 0% 30%;
+  --accent-border: 0 0% 92%;
+  --destructive: 0 100% 65%;
+  --destructive-foreground: 0 0% 100%;
+  --destructive-border: 0 80% 56%;
+  --input: 0 0% 90%;
+  --ring: 90 88% 40%;
+  --button-outline: rgba(0,0,0,0.1);
+  --badge-outline: rgba(0,0,0,0.05);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0,0,0,0.03);
+  --elevate-2: rgba(0,0,0,0.08);
+  --radius: 12px;
+  --font-sans: 'Nunito', 'DIN Round Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Feather Bold', 'Nunito', sans-serif;
+}
+
+@layer base {
+  * { @apply border-border; }
+  html, body, #root { height: 100%; }
+  body {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: rgb(var(--gray-text));
+    background: rgb(var(--background));
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button { font-family: inherit; }
+}
+
+/* ============================ Typography ============================ */
+.font-display { font-family: var(--font-display); }
+
+/* ============================ Duo Buttons ============================
+   3-D push buttons with bottom shadow that disappears on press.
+   Default: full-width on mobile.
+*/
+.duo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 50px;
+  padding: 0 20px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  border: 0;
+  cursor: pointer;
+  user-select: none;
+  transition: filter 0.1s ease, transform 0.06s ease, box-shadow 0.06s ease;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+.duo-btn:disabled,
+.duo-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.duo-btn:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: none !important;
+}
+
+.duo-btn--primary {
+  background: rgb(var(--green));
+  color: white;
+  box-shadow: 0 4px 0 rgb(var(--green-shadow));
+}
+.duo-btn--primary:hover { background: rgb(var(--green-hover)); }
+
+.duo-btn--secondary {
+  background: white;
+  color: rgb(var(--blue));
+  border: 2px solid #E5E5E5;
+  box-shadow: 0 4px 0 #E5E5E5;
+}
+.duo-btn--secondary:hover { background: #F7F7F7; }
+
+.duo-btn--danger {
+  background: rgb(var(--red));
+  color: white;
+  box-shadow: 0 4px 0 rgb(var(--red-shadow));
+}
+
+.duo-btn--ghost {
+  background: transparent;
+  color: rgb(var(--green));
+  box-shadow: none;
+  height: 44px;
+}
+.duo-btn--ghost:hover { background: rgba(88,204,2,0.08); }
+.duo-btn--ghost:active { transform: none !important; }
+
+.duo-btn--blue {
+  background: rgb(var(--blue));
+  color: white;
+  box-shadow: 0 4px 0 rgb(var(--blue-shadow));
+}
+
+.duo-btn--sm { height: 40px; font-size: 13px; padding: 0 14px; border-radius: 10px; box-shadow: 0 3px 0 currentColor; }
+.duo-btn--sm.duo-btn--primary { box-shadow: 0 3px 0 rgb(var(--green-shadow)); }
+.duo-btn--sm.duo-btn--secondary { box-shadow: 0 3px 0 #E5E5E5; }
+
+/* ============================ Cards / Tiles ============================ */
+.duo-card {
+  background: white;
+  border: 2px solid rgb(var(--border-color));
+  border-radius: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.duo-card-tile {
+  background: white;
+  border: 2px solid rgb(var(--border-color));
+  border-bottom-width: 4px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.06s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.duo-card-tile:hover { background: #F7F7F7; }
+.duo-card-tile:active { transform: translateY(2px); border-bottom-width: 2px; }
+.duo-card-tile[data-selected="true"] {
+  border-color: rgb(var(--blue));
+  background: rgba(28,176,246,0.10);
+}
+.duo-card-tile[data-selected="true"] .tile-check { opacity: 1; transform: scale(1); }
+
+/* ============================ Pills / Badges ============================ */
+.duo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* ============================ Progress bar ============================ */
+.duo-progress {
+  height: 16px;
+  background: rgb(var(--border-color));
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+.duo-progress > span {
+  display: block;
+  height: 100%;
+  background: rgb(var(--green));
+  border-radius: 999px;
+  transition: width 0.45s cubic-bezier(0.2, 0.6, 0.2, 1);
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.08), inset 0 4px 0 rgba(255,255,255,0.25);
+}
+
+/* ============================ Inputs ============================ */
+.duo-input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 2px solid rgb(var(--border-color));
+  border-radius: 12px;
+  font-size: 16px;       /* prevents iOS zoom */
+  font-weight: 600;
+  font-family: inherit;
+  background: white;
+  color: rgb(var(--gray-text));
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.duo-input::placeholder { color: rgb(var(--nav-text)); font-weight: 500; }
+.duo-input:focus { border-color: rgb(var(--blue)); }
+
+/* ============================ Confetti (CSS-only) ============================ */
+@keyframes confetti-fall {
+  0% { transform: translateY(-20vh) rotate(0); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0.9; }
+}
+.confetti-piece {
+  position: absolute;
+  top: -10vh;
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+  animation: confetti-fall linear forwards;
+}
+
+/* ============================ Misc ============================ */
+.no-tap-highlight { -webkit-tap-highlight-color: transparent; }
+
+/* Hide horizontal overflow caused by full-bleed elements on small screens */
+html, body { overflow-x: hidden; }
+
+/* Safe-area padding for notched devices */
+.safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+.safe-top    { padding-top:    max(0px,  env(safe-area-inset-top)); }
