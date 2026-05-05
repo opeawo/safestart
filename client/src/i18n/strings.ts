@@ -113,6 +113,11 @@ const en: Dict = {
   privacy: "Privacy",
   changeLanguage: "Change language",
   schools: "Schools",
+  howToUse: "How to use",
+  howToUseTitle: "how to use safe start",
+  howToUseSub: "A short guide for parents and schools — read once, share widely.",
+  howToTabParents: "For parents",
+  howToTabSchools: "For schools",
 };
 
 // First-pass translations for header / hero / key flows. UI strings the parent
