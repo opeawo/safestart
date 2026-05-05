@@ -29,3 +29,5 @@ The app is a fully static SPA — `dist/public` can be served by any static host
 ## A Safe Start Initiative
 
 A ProsperityTech Initiative. Contact: hello@prosperitytech.org · partnerships@prosperitytech.org
+
+_Last deploy: auto via GitHub_
