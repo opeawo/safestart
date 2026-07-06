@@ -31,6 +31,9 @@ export type Platform = {
   deepLink: string;      // attempted first per F3.3
   steps: Step[];
   quiz: Quiz;
+  // Full walkthrough recording for this platform. When present, the per-step
+  // "Watch how-to video" button plays this instead of a YouTube fallback.
+  walkthroughVideoUrl?: string;
 };
 
 export const PLATFORMS: Platform[] = [
@@ -41,6 +44,7 @@ export const PLATFORMS: Platform[] = [
     emoji: "🎵",
     domain: "tiktok.com",
     estMin: 3,
+    walkthroughVideoUrl: "https://app.trupeer.ai/embed/U0uuSeLgt",
     intro:
       "We'll turn on Family Pairing, Restricted Mode, limit who can message your child, and switch off personalised ads.",
     wrap:
@@ -95,6 +99,7 @@ export const PLATFORMS: Platform[] = [
     emoji: "📸",
     domain: "instagram.com",
     estMin: 3,
+    walkthroughVideoUrl: "https://app.trupeer.ai/embed/9TLvlXR1M",
     intro:
       "We'll switch the account to Teen, make it private, restrict messages to followers only, and limit sensitive content.",
     wrap:
@@ -192,6 +197,7 @@ export const PLATFORMS: Platform[] = [
     color: "#FFFC00",
     emoji: "👻",
     domain: "snapchat.com",
+    walkthroughVideoUrl: "https://app.trupeer.ai/embed/dsSQyKFmT",
     estMin: 3,
     intro:
       "We'll link your child to Family Center, hide their location, switch off Quick Add, and lock who can contact them.",
@@ -291,6 +297,7 @@ export const PLATFORMS: Platform[] = [
     emoji: "🌐",
     domain: "google.com",
     estMin: 3,
+    walkthroughVideoUrl: "https://app.trupeer.ai/embed/0ARQVnMfo",
     intro:
       "We'll lock SafeSearch on Google, supervise Chrome with Family Link, and block sites that aren't safe for kids.",
     wrap:

@@ -21,7 +21,11 @@ export default function Walkthrough() {
   const [chosen, setChosen] = useState<number | null>(null);
   const [wrongCount, setWrongCount] = useState(0);
   const [skipDialog, setSkipDialog] = useState(false);
-  const [videoQuery, setVideoQuery] = useState<string | null>(null);
+  const [videoOpen, setVideoOpen] = useState<
+    | { src: string }
+    | { query: string }
+    | null
+  >(null);
 
   useEffect(() => {
     setChosen(null);
@@ -166,8 +170,14 @@ export default function Walkthrough() {
             <button
               type="button"
               onClick={() =>
-                setVideoQuery(
-                  step.videoQuery ?? `${platform.name} ${step.title} tutorial 2025`
+                setVideoOpen(
+                  platform.walkthroughVideoUrl
+                    ? { src: platform.walkthroughVideoUrl }
+                    : {
+                        query:
+                          step.videoQuery ??
+                          `${platform.name} ${step.title} tutorial 2025`,
+                      }
                 )
               }
               className="inline-flex items-center gap-2 text-[14px] font-extrabold no-tap-highlight"
@@ -209,8 +219,12 @@ export default function Walkthrough() {
           </button>
         </div>
 
-        {videoQuery && (
-          <VideoModal query={videoQuery} onClose={() => setVideoQuery(null)} />
+        {videoOpen && (
+          <VideoModal
+            src={"src" in videoOpen ? videoOpen.src : undefined}
+            query={"query" in videoOpen ? videoOpen.query : undefined}
+            onClose={() => setVideoOpen(null)}
+          />
         )}
 
         {skipDialog && (

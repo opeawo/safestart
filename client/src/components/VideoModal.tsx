@@ -2,14 +2,17 @@ import { useEffect } from "react";
 import { useApp } from "../state/AppContext";
 
 type Props = {
-  query: string;
+  // Direct embed URL (e.g. a Trupeer walkthrough) — takes precedence when set.
+  src?: string;
+  // Fallback: YouTube search query used when no `src` is provided.
+  query?: string;
   onClose: () => void;
 };
 
-// Plays the first YouTube search result for `query` inside an embed.
-// Uses YouTube's officially supported listType=search embed parameter.
-// Stays in-app — no new window.
-export function VideoModal({ query, onClose }: Props) {
+// Plays a walkthrough video inside an in-app modal.
+// If `src` is given, it's embedded directly. Otherwise we fall back to the
+// first YouTube search result for `query` via listType=search.
+export function VideoModal({ src, query, onClose }: Props) {
   const { t } = useApp();
 
   // Lock body scroll while open + close on Escape
@@ -26,9 +29,11 @@ export function VideoModal({ query, onClose }: Props) {
     };
   }, [onClose]);
 
-  const embedSrc = `https://www.youtube-nocookie.com/embed?listType=search&list=${encodeURIComponent(
-    query
-  )}&autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+  const embedSrc =
+    src ??
+    `https://www.youtube-nocookie.com/embed?listType=search&list=${encodeURIComponent(
+      query ?? ""
+    )}&autoplay=1&rel=0&modestbranding=1&playsinline=1`;
 
   return (
     <div

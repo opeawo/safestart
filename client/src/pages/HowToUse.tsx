@@ -2,6 +2,8 @@ import { Shell } from "../components/Shell";
 import { useApp } from "../state/AppContext";
 import { useLocation } from "wouter";
 import { useState } from "react";
+import { PLATFORMS } from "../content/platforms";
+import { VideoModal } from "../components/VideoModal";
 
 // English-first per PRD §7.3 — translations queued for native review.
 // Content is structured (not parsed markdown) so it renders with the
@@ -164,6 +166,79 @@ function Card({
   );
 }
 
+function VideoGallery() {
+  const [open, setOpen] = useState<{ src: string; name: string } | null>(null);
+  const items = PLATFORMS.map((p) => ({
+    id: p.id,
+    name: p.name,
+    color: p.color,
+    emoji: p.emoji,
+    src: p.walkthroughVideoUrl,
+  }));
+
+  return (
+    <>
+      <div className="mt-2 grid grid-cols-2 gap-3">
+        {items.map((it) => {
+          const ready = !!it.src;
+          return (
+            <button
+              key={it.id}
+              type="button"
+              disabled={!ready}
+              onClick={() =>
+                ready && setOpen({ src: it.src as string, name: it.name })
+              }
+              data-testid={`button-video-${it.id}`}
+              className="no-tap-highlight text-left rounded-2xl p-3"
+              style={{
+                background: "rgb(248,248,248)",
+                border: "1px solid rgb(var(--border-color))",
+                opacity: ready ? 1 : 0.55,
+                cursor: ready ? "pointer" : "not-allowed",
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <span
+                  aria-hidden
+                  className="grid place-items-center rounded-lg text-[16px]"
+                  style={{
+                    width: 32,
+                    height: 32,
+                    background: it.color,
+                    color: "#fff",
+                  }}
+                >
+                  {it.emoji}
+                </span>
+                <span
+                  className="font-extrabold text-[14px]"
+                  style={{ color: "rgb(var(--gray-text))" }}
+                >
+                  {it.name}
+                </span>
+              </div>
+              <p
+                className="mt-1.5 text-[12px] font-bold"
+                style={{
+                  color: ready
+                    ? "rgb(var(--blue))"
+                    : "rgb(var(--gray-light))",
+                }}
+              >
+                {ready ? "▶ Watch walkthrough" : "Coming soon"}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+      {open && (
+        <VideoModal src={open.src} onClose={() => setOpen(null)} />
+      )}
+    </>
+  );
+}
+
 function FAQ({ q, a }: { q: string; a: React.ReactNode }) {
   return (
     <Card>
@@ -274,6 +349,13 @@ function ParentsTab() {
           we&apos;ll show you where to look.
         </p>
       </Card>
+
+      <H2>Watch the how-to videos</H2>
+      <P>
+        Short walkthroughs for each app. Tap one to play it in-app — no sign-in
+        needed.
+      </P>
+      <VideoGallery />
 
       <H2>What happens after</H2>
       <P>
