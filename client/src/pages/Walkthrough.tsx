@@ -1,7 +1,7 @@
 import { useLocation, useParams } from "wouter";
 import { useApp } from "../state/AppContext";
 import { Shell } from "../components/Shell";
-import { getPlatform, PLATFORMS } from "../content/platforms";
+import { getPlatform } from "../content/platforms";
 import { PlatformGlyph } from "../components/PlatformGlyph";
 import { useEffect, useMemo, useState } from "react";
 import { WrapStage } from "./WalkthroughWrap";
@@ -12,7 +12,7 @@ type Stage = "intro" | "step" | "verify" | "wrap";
 export default function Walkthrough() {
   const params = useParams<{ id: string; stage?: string }>();
   const [, navigate] = useLocation();
-  const { t, progress, advanceStep, skipPlatform, selectedIds } = useApp();
+  const { t, progress, advanceStep, skipPlatform } = useApp();
 
   const platform = getPlatform(params.id || "");
   const stage = (params.stage as Stage) || "intro";
@@ -36,15 +36,14 @@ export default function Walkthrough() {
   const totalSteps = platform?.steps.length ?? 0;
 
   const overallPct = useMemo(() => {
-    if (!platform) return 0;
-    const total = PLATFORMS.length;
-    const completedPlatforms = selectedIds.filter((id) => progress[id]?.done).length;
-    if (stage === "intro") return Math.round((completedPlatforms / total) * 100);
-    if (stage === "wrap") return Math.round(((completedPlatforms + 1) / total) * 100);
-    // step / verify: partial credit within this platform
-    const within = stage === "verify" ? 1 : (stepIndex + 1) / (totalSteps + 1);
-    return Math.round(((completedPlatforms + within) / total) * 100);
-  }, [platform, selectedIds, progress, stage, stepIndex, totalSteps]);
+    if (!platform || totalSteps === 0) return 0;
+    // Progress within this platform's walkthrough (dashboard picks the next).
+    if (stage === "intro") return 0;
+    if (stage === "wrap") return 100;
+    // step / verify
+    const within = stage === "verify" ? totalSteps + 1 : stepIndex + 1;
+    return Math.round((within / (totalSteps + 1)) * 100);
+  }, [platform, stage, stepIndex, totalSteps]);
 
   if (!platform) {
     return (
@@ -53,12 +52,9 @@ export default function Walkthrough() {
   }
 
   const goNextPlatform = () => {
-    // Find next selected platform after this one that isn't done.
-    const ids = selectedIds;
-    const idx = ids.indexOf(platform.id);
-    const after = ids.slice(idx + 1).find((id) => !progress[id]?.done);
-    if (after) navigate(`/walkthrough/${after}/intro`);
-    else navigate("/school");
+    // Dashboard-first flow: every completed app goes straight to /school (which
+    // then routes to /celebrate). Parents return to /select to pick the next.
+    navigate("/school");
   };
 
   const onBack = () => {
@@ -381,12 +377,7 @@ export default function Walkthrough() {
         progressPct={overallPct}
         onBack={onBack}
         onNext={goNextPlatform}
-        nextLabel={(() => {
-          const ids = selectedIds;
-          const idx = ids.indexOf(platform.id);
-          const remaining = ids.slice(idx + 1).filter((id) => !progress[id]?.done);
-          return remaining.length > 0 ? t("next") : t("finish");
-        })()}
+        nextLabel={t("finish")}
       />
     );
   }

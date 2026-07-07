@@ -182,6 +182,13 @@ export default function Celebrate() {
           {t("downloadCard")}
         </button>
         <button
+          className="duo-btn duo-btn--secondary"
+          onClick={() => navigate("/select")}
+          data-testid="button-setup-another"
+        >
+          {t("celebrateAnother")}
+        </button>
+        <button
           className="duo-btn duo-btn--ghost"
           onClick={() => { resetAll(); navigate("/home"); }}
           data-testid="button-start-over"

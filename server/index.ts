@@ -92,13 +92,15 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || "5000", 10);
-  // reusePort is only supported on Linux (used in the Replit/Vercel Linux
-  // runtime). Enabling it on macOS/Windows fails with ENOTSUP at listen time.
+  // Bind to 0.0.0.0 on Linux (Replit/Vercel runtime needs external reach);
+  // fall back to 127.0.0.1 on macOS/Windows dev where sandboxed runners
+  // return ENOTSUP for 0.0.0.0. reusePort is Linux-only.
+  const isLinux = process.platform === "linux";
   const listenOptions: { port: number; host: string; reusePort?: boolean } = {
     port,
-    host: "0.0.0.0",
+    host: isLinux ? "0.0.0.0" : "127.0.0.1",
   };
-  if (process.platform === "linux") listenOptions.reusePort = true;
+  if (isLinux) listenOptions.reusePort = true;
   httpServer.listen(listenOptions, () => {
     log(`serving on port ${port}`);
   });

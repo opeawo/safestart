@@ -58,9 +58,6 @@ type AppState = {
   hasPickedLang: boolean;
 
   progress: ProgressMap;
-  setSelected: (id: string, selected: boolean) => void;
-  selectAll: () => void;
-  selectNone: () => void;
   advanceStep: (id: string) => void;
   markDone: (id: string) => void;
   skipStep: (id: string) => void;
@@ -76,7 +73,6 @@ type AppState = {
   setSchool: (n: string | null) => void;
 
   // Helpers
-  selectedIds: string[];
   totalSettings: number;
   completedPlatforms: string[];
   elapsedMinutes: number;
@@ -127,24 +123,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const setLang = useCallback((l: Lang) => setLangState(l), []);
 
-  const setSelected = useCallback((id: string, selected: boolean) => {
-    setProgress((prev) => ({ ...prev, [id]: { ...prev[id], selected } }));
-  }, []);
-  const selectAll = useCallback(() => {
-    setProgress((prev) => {
-      const next: ProgressMap = { ...prev };
-      for (const id of Object.keys(next)) next[id] = { ...next[id], selected: true };
-      return next;
-    });
-  }, []);
-  const selectNone = useCallback(() => {
-    setProgress((prev) => {
-      const next: ProgressMap = { ...prev };
-      for (const id of Object.keys(next)) next[id] = { ...next[id], selected: false };
-      return next;
-    });
-  }, []);
-
   const advanceStep = useCallback((id: string) => {
     setProgress((prev) => {
       const cur = prev[id];
@@ -182,10 +160,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setStartedAt((s) => s ?? Date.now());
   }, []);
 
-  const selectedIds = useMemo(
-    () => PLATFORMS.filter((p) => progress[p.id]?.selected).map((p) => p.id),
-    [progress]
-  );
   const completedPlatforms = useMemo(
     () => PLATFORMS.filter((p) => progress[p.id]?.done && !progress[p.id]?.skipped).map((p) => p.id),
     [progress]
@@ -213,9 +187,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLang,
     hasPickedLang: lang !== null,
     progress,
-    setSelected,
-    selectAll,
-    selectNone,
     advanceStep,
     markDone,
     skipStep,
@@ -225,7 +196,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     startSession,
     schoolName,
     setSchool: setSchoolName,
-    selectedIds,
     totalSettings,
     completedPlatforms,
     elapsedMinutes,
