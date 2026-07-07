@@ -147,19 +147,46 @@ export default function Walkthrough() {
           className="duo-card overflow-hidden mb-5"
           style={{ borderColor: "rgb(var(--border-color))" }}
         >
-          <div
-            className="flex items-center justify-center"
-            style={{
-              height: 160,
-              background: `linear-gradient(180deg, ${platform.color}22 0%, ${platform.color}08 100%)`,
-            }}
-          >
-            {step.illustration ? (
-              <div style={{ fontSize: 80 }} aria-hidden>{step.illustration}</div>
-            ) : (
-              <PlatformGlyph platform={platform} size={96} />
-            )}
-          </div>
+          {isFirstStep && platform.walkthroughVideoUrl ? (
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                aspectRatio: "16 / 9",
+                background: "black",
+              }}
+            >
+              <iframe
+                src={platform.walkthroughVideoUrl}
+                title={`${platform.name} walkthrough`}
+                allow="autoplay; fullscreen; encrypted-media; clipboard-write"
+                allowFullScreen
+                loading="lazy"
+                data-testid="iframe-walkthrough-video"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  border: 0,
+                }}
+              />
+            </div>
+          ) : (
+            <div
+              className="flex items-center justify-center"
+              style={{
+                height: 160,
+                background: `linear-gradient(180deg, ${platform.color}22 0%, ${platform.color}08 100%)`,
+              }}
+            >
+              {step.illustration ? (
+                <div style={{ fontSize: 80 }} aria-hidden>{step.illustration}</div>
+              ) : (
+                <PlatformGlyph platform={platform} size={96} />
+              )}
+            </div>
+          )}
           <div className="p-5">
             <h2 className="text-[20px] font-extrabold leading-tight mb-2" style={{ color: "rgb(var(--gray-text))" }}>
               {step.title}
@@ -167,28 +194,30 @@ export default function Walkthrough() {
             <p className="text-[15px] leading-[1.55] mb-4" style={{ color: "rgb(var(--gray-light))" }}>
               {step.body}
             </p>
-            <button
-              type="button"
-              onClick={() =>
-                setVideoOpen(
-                  platform.walkthroughVideoUrl
-                    ? { src: platform.walkthroughVideoUrl }
-                    : {
-                        query:
-                          step.videoQuery ??
-                          `${platform.name} ${step.title} tutorial 2025`,
-                      }
-                )
-              }
-              className="inline-flex items-center gap-2 text-[14px] font-extrabold no-tap-highlight"
-              style={{ color: "rgb(var(--blue))", background: "none", border: 0, padding: 0 }}
-              data-testid="button-watch-video"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                <path d="M23 7.2c-.3-1.1-1.1-1.9-2.2-2.2C18.9 4.5 12 4.5 12 4.5s-6.9 0-8.8.5C2.1 5.3 1.3 6.1 1 7.2.5 9.1.5 12 .5 12s0 2.9.5 4.8c.3 1.1 1.1 1.9 2.2 2.2 1.9.5 8.8.5 8.8.5s6.9 0 8.8-.5c1.1-.3 1.9-1.1 2.2-2.2.5-1.9.5-4.8.5-4.8s0-2.9-.5-4.8zM9.8 15.5V8.5l5.8 3.5-5.8 3.5z"/>
-              </svg>
-              <span>{t("watchVideo")}</span>
-            </button>
+            {(!isFirstStep || !platform.walkthroughVideoUrl) && (
+              <button
+                type="button"
+                onClick={() =>
+                  setVideoOpen(
+                    platform.walkthroughVideoUrl
+                      ? { src: platform.walkthroughVideoUrl }
+                      : {
+                          query:
+                            step.videoQuery ??
+                            `${platform.name} ${step.title} tutorial 2025`,
+                        }
+                  )
+                }
+                className="inline-flex items-center gap-2 text-[14px] font-extrabold no-tap-highlight"
+                style={{ color: "rgb(var(--blue))", background: "none", border: 0, padding: 0 }}
+                data-testid="button-watch-video"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M23 7.2c-.3-1.1-1.1-1.9-2.2-2.2C18.9 4.5 12 4.5 12 4.5s-6.9 0-8.8.5C2.1 5.3 1.3 6.1 1 7.2.5 9.1.5 12 .5 12s0 2.9.5 4.8c.3 1.1 1.1 1.9 2.2 2.2 1.9.5 8.8.5 8.8.5s6.9 0 8.8-.5c1.1-.3 1.9-1.1 2.2-2.2.5-1.9.5-4.8.5-4.8s0-2.9-.5-4.8zM9.8 15.5V8.5l5.8 3.5-5.8 3.5z"/>
+                </svg>
+                <span>{t("watchVideo")}</span>
+              </button>
+            )}
           </div>
         </div>
 
